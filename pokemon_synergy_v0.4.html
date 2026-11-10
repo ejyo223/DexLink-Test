@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pokémon Synergy — Prototype V0.4</title>
+<style>
+:root{--bg:#0b1324;--surface:#14223b;--surface2:#1b2e4b;--line:#344965;--text:#eef4ff;--muted:#a7bad4;--accent:#ffcf59;--good:#79dfaa}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 48% 10%,#1c3557,var(--bg) 67%);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}button{font:inherit;cursor:pointer}header{padding:23px 24px 10px;max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}h1{font-size:clamp(1.5rem,3vw,2.2rem);margin:0;letter-spacing:-.04em}h1 span{color:var(--accent)}.sub{color:var(--muted);margin:5px 0 0;font-size:.9rem}.smallbutton{border:1px solid #6982a5;color:white;background:#263b59;padding:9px 13px;border-radius:10px}.smallbutton:hover{background:#355279}main{max-width:1180px;margin:auto;padding:12px 20px 32px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(310px,.85fr);gap:18px}.panel{background:#12223be8;border:1px solid #324866;border-radius:19px;box-shadow:0 18px 50px #06101e40}.boardpanel{padding:15px;min-width:0}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.eyebrow{text-transform:uppercase;letter-spacing:.13em;color:#a8bad3;font-size:11px;font-weight:800}.panelhead h2{margin:4px 0 0;font-size:18px}.round{color:var(--accent);font-size:13px;font-weight:800}.board{position:relative;margin:8px auto 0;max-width:655px;aspect-ratio:1.12;min-height:380px;user-select:none}.connections{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}.connections line{stroke:#4e6585;stroke-width:1.25;stroke-dasharray:2 1.5}.connections line.active{stroke:#7486a2;stroke-width:1.4;stroke-dasharray:none}.connections line.synergy-one{stroke:#ffcf4b;stroke-width:2.4;stroke-dasharray:none;filter:drop-shadow(0 0 1px #fcd34d)}.connections line.synergy-many{stroke:#44de90;stroke-width:2.9;stroke-dasharray:none;filter:drop-shadow(0 0 1.3px #47e49a)}.slot{position:absolute;width:26%;height:23%;transform:translate(-50%,-50%);border:2px dashed #59718f;border-radius:20px;background:#20314c80;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:7px;transition:background .15s,border-color .15s,transform .15s;outline:none}.slot.empty{color:#9db3d2}.slot.empty.can-drop{border-color:#f9ce65;background:#3e4b56}.slot.empty.can-drop:hover,.slot.empty.can-drop:focus{background:#42536b;transform:translate(-50%,-50%) scale(1.045)}.slot.filled{border:2px solid #6685aa;background:linear-gradient(155deg,#304b70,#192d49);box-shadow:0 8px 22px #080f2599}.slot.ace{border-color:#f9ce65;box-shadow:0 0 22px #e9b84b30}.slot.drop-over{outline:3px solid #90eead;outline-offset:3px}.slotnum{font-weight:800;font-size:12px;opacity:.75}.sloticon{font-size:28px;line-height:1.1}.slotname{font-weight:850;font-size:clamp(11px,1.6vw,15px);margin:3px 0 2px}.slotmeta{font-size:10px;color:#c8d7e8}.aceTag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);color:#172238;background:#f7cf64;border-radius:50px;padding:3px 11px;font-size:10px;font-weight:900}.scorestrip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:7px}.metric{background:#0c1b30;border:1px solid #2d4260;border-radius:12px;text-align:center;padding:10px 5px}.metric b{font-size:22px;color:#fff;display:block}.metric:nth-child(3) b{color:var(--accent)}.metric span{font-size:11px;color:var(--muted)}.side{display:flex;flex-direction:column;gap:16px}.pickpanel,.rulepanel{padding:18px}.pickpanel h2,.rulepanel h2{font-size:18px;margin:5px 0 7px}.hint{color:#b6c8dc;font-size:13px;line-height:1.5;margin:0 0 15px}.choices{display:grid;gap:10px}.choice{display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:10px;text-align:left;width:100%;border:1px solid #526985;border-radius:13px;padding:10px;background:#203751;color:var(--text);transition:background .15s,transform .15s,border .15s}.choice:hover,.choice:focus{background:#2e4a6c;transform:translateY(-1px)}.choice.selected{border:2px solid #ffcf59;background:#3b4560;padding:9px}.choice:disabled{opacity:.52;cursor:default}.avatar{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;font-size:27px;background:#2c5271}.choice strong{display:block;font-size:14px}.choice small{display:block;font-size:11px;color:#cad7e9;line-height:1.4}.pow{font-weight:850;color:#ffdb7d}.notice{margin-top:12px;background:#0a1d31;border:1px solid #2b5276;border-radius:11px;padding:10px 12px;font-size:12px;color:#c8def7;line-height:1.5}.legend{display:flex;gap:7px;flex-wrap:wrap;margin:11px 0}.pill{background:#2a405e;border:1px solid #456080;border-radius:30px;padding:5px 9px;font-size:11px;color:#e1ebf9}.rules{font-size:12px;color:#c3d3e7;line-height:1.7;margin:8px 0}.rules strong{color:#ffdf85}.synergy-list{margin-top:12px;max-height:190px;overflow:auto;display:grid;gap:6px}.synergy-item{background:#1c3350;padding:8px;border-radius:8px;display:flex;justify-content:space-between;gap:8px;font-size:12px}.synergy-item b{color:#98ecc0;white-space:nowrap}.ace-warning{margin-top:12px;padding:12px 14px;background:#3c321c;border:1px solid #c9a64a;border-radius:12px;color:#f7e3ad;font-size:13px;line-height:1.5}.boardactions{display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap}.boardactions #copyStatus{font-size:12px;color:#a6eebd}.slot.moving{outline:3px solid #b0a8ff;outline-offset:2px}.tier{font-size:11px;font-weight:900;padding:3px 6px;border-radius:6px;background:#50617e;color:#fff;white-space:nowrap}.tier-S{background:#7d52b4}.tier-A{background:#286ab0}.tier-B{background:#318769}.tier-C{background:#aa7b23}.tier-D{background:#576274}.choice .pow{min-width:52px}.choice .pow .tier{display:block;margin-bottom:4px}.slot .tier{font-size:9px;padding:1px 4px}.slot .slotmeta{font-size:9px}.footer{color:#94aac6;font-size:11px;text-align:center;padding:0 0 24px}.finalpanel{margin-top:12px;padding:15px;background:#193552;border:1px solid #58b68a;border-radius:13px}.finalpanel h3{margin:0 0 9px;color:#a8f6c6}.finalpanel p{margin:7px 0;font-size:13px;line-height:1.5}.lockbutton{font-weight:850;background:#eac257;color:#15243b;border:0;border-radius:10px;padding:12px 20px}.lockbutton:disabled{opacity:.5;cursor:not-allowed}.locked-slot{cursor:default}.complete{font-size:14px;color:#98e8b7;font-weight:800}.status{margin-top:10px;min-height:32px;font-size:12px;color:#b9d2eb} .types{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;margin:3px 0}.typebadge{display:inline-flex;align-items:center;gap:3px;border-radius:7px;padding:2px 4px;font-weight:800;color:white;font-size:9px;line-height:1.2;border:1px solid #ffffff39;text-shadow:0 1px 1px #0008;white-space:nowrap}.typeglyph{font-size:11px;line-height:1}.slotmeta{line-height:1.25}.slot .slotmeta{font-size:10px}.slot.filled{padding:4px 3px}.sloticon{font-size:24px}.slotname{margin:1px 0}.avatar .typeglyph{font-size:24px}.choice .types{justify-content:flex-start;margin:4px 0 1px}.choice .typebadge{font-size:10px;padding:3px 6px}.choice .typeglyph{font-size:12px}.edge-help{font-size:11px;color:#c1d0e6;margin-top:7px}.choice .pow{text-align:right}.pow small{font-size:10px;color:#b5cae3;display:block;font-weight:500}.tip{font-size:11px;color:#8ba9cc;margin-top:8px}@media(max-width:820px){main{grid-template-columns:1fr}.board{max-width:630px}.choice{grid-template-columns:46px 1fr auto}.slotname{font-size:clamp(11px,3vw,15px)}}@media(max-width:450px){main{padding:8px 10px 20px}.boardpanel{padding:10px}.board{min-height:310px}.slot{border-radius:12px;width:28%;height:23%}.sloticon{font-size:23px}.slotmeta{font-size:9px}.slotname{font-size:10px}.metric b{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div><h1><span>Pokémon</span> Synergy Lab <span style="font-size:13px;background:#30425e;padding:4px 7px;border-radius:6px;vertical-align:middle;color:#e7eefb">V0.4</span></h1><p class="sub">Draft six Pokémon. Build chemistry through connected teammates.</p></div><button class="smallbutton" id="reset">↻ New draft</button></header>
+<main>
+<section class="panel boardpanel"><div class="panelhead"><div><div class="eyebrow">Your squad</div><h2>Synergy web</h2></div><div class="round" id="round">Pick 1 / 6</div></div><div class="board" id="board"><svg class="connections" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" id="lines"></svg></div><div class="scorestrip"><div class="metric"><b id="power">0</b><span>Tier power</span></div><div class="metric"><b id="chemistry">0</b><span>Synergy bonus</span></div><div class="metric"><b id="total">0</b><span>Total score</span></div></div><div class="status" id="status" aria-live="polite"></div><div class="ace-warning" id="aceWarning"><strong>★ Ace rule:</strong> Choose your Ace at any time. Once placed in the center, it is <strong>locked for the rest of the game</strong>. The five outer Pokémon can be rearranged.</div><div class="boardactions"><button class="lockbutton" id="lockTeam" disabled>🔒 Lock In Team & Reveal Score</button><button class="smallbutton" id="copyResults">📋 Copy results</button><span id="copyStatus" aria-live="polite"></span></div><div id="finalPanel" class="finalpanel" hidden aria-live="polite"></div></section>
+<aside class="side"><section class="panel pickpanel"><div class="eyebrow">The draft</div><h2 id="pickTitle">Choose Pokémon 1</h2><p class="hint" id="pickHint">Pick one of three Pokémon and place it anywhere on the web.</p><div class="choices" id="choices"></div><div class="notice" id="notice">Select a Pokémon, then click a valid slot in the web — or drag the Pokémon card onto that slot.</div></section><section class="panel rulepanel"><div class="eyebrow">How scoring works</div><h2>Connections matter</h2><div class="legend"><span class="pill">🟡 1 shared trait</span><span class="pill">🟢 2–3 shared traits</span><span class="pill">⚪ No synergy</span></div><div class="legend"><span class="pill">⚡ Same type +20</span><span class="pill">🌎 Same generation +15</span><span class="pill">🔁 Same evolution stage +15</span></div><p class="rules">Each Pokémon adds its <strong>tier power</strong> to your score: S 100 · A 80 · B 60 · C 40 · D 20. Its actual BST is shown for reference. Two Pokémon earn synergy <strong>only when connected by a visible line</strong>. Bonuses stack if they match in multiple categories. Dual-type Pokémon match if they share at least one type.</p><p class="rules">The Ace connects to all five outer positions. Outer Pokémon connect only to their two immediate neighbors around the ring. <strong>You may choose the Ace at any time, but once it is placed, it cannot be moved or replaced.</strong> Select any outer Pokémon to move or swap it with another outer slot until you lock in your completed team.</p><div class="edge-help">Lines update immediately: yellow = 1 shared category; green = 2 or 3 shared categories. A gray solid line means the Pokémon are connected without a match.</div><div class="eyebrow">Earned connections</div><div class="synergy-list" id="synergies"><span class="tip">Place Pokémon to see synergy bonuses here.</span></div><p class="tip">Expanded sample roster. S tier is reserved for Legendary or Mythical Pokémon; A ≥ 500 BST, B 400–499, C 300–399, D below 300. Unchosen options are permanently discarded. Drafting a Pokémon removes its full evolution family from later offers. Draw weights per offered card: S 2%, A 13%, B 30%, C 35%, D 20%. BST uses standard species totals (not Mega, regional, or temporary forms). Evolution stage indicates position in its evolutionary line; for branched lines, the number may be 2. Type icons are custom prototype symbols.</p></section></aside>
+</main><div class="footer">Fan-made gameplay concept · Pokémon names are used for prototype demonstration only.</div>
+<script>
+const mons=[
+{name:'Pikachu',types:['Electric'],region:'Kanto',stage:2,power:320,icon:'⚡'},
+{name:'Raichu',types:['Electric'],region:'Kanto',stage:3,power:485,icon:'⚡'},
+{name:'Charmander',types:['Fire'],region:'Kanto',stage:1,power:309,icon:'🔥'},
+{name:'Charmeleon',types:['Fire'],region:'Kanto',stage:2,power:405,icon:'🔥'},
+{name:'Charizard',types:['Fire','Flying'],region:'Kanto',stage:3,power:534,icon:'🐉'},
+{name:'Bulbasaur',types:['Grass','Poison'],region:'Kanto',stage:1,power:318,icon:'🌱'},
+{name:'Ivysaur',types:['Grass','Poison'],region:'Kanto',stage:2,power:405,icon:'🌿'},
+{name:'Venusaur',types:['Grass','Poison'],region:'Kanto',stage:3,power:525,icon:'🌺'},
+{name:'Squirtle',types:['Water'],region:'Kanto',stage:1,power:314,icon:'💧'},
+{name:'Blastoise',types:['Water'],region:'Kanto',stage:3,power:530,icon:'🐢'},
+{name:'Gengar',types:['Ghost','Poison'],region:'Kanto',stage:3,power:500,icon:'👻'},
+{name:'Dragonite',types:['Dragon','Flying'],region:'Kanto',stage:3,power:600,icon:'🐲'},
+{name:'Cyndaquil',types:['Fire'],region:'Johto',stage:1,power:309,icon:'🔥'},
+{name:'Typhlosion',types:['Fire'],region:'Johto',stage:3,power:534,icon:'🌋'},
+{name:'Totodile',types:['Water'],region:'Johto',stage:1,power:314,icon:'🐊'},
+{name:'Feraligatr',types:['Water'],region:'Johto',stage:3,power:530,icon:'🐊'},
+{name:'Ampharos',types:['Electric'],region:'Johto',stage:3,power:510,icon:'💡'},
+{name:'Espeon',types:['Psychic'],region:'Johto',stage:2,power:525,icon:'🔮'},
+{name:'Umbreon',types:['Dark'],region:'Johto',stage:2,power:525,icon:'🌙'},
+{name:'Treecko',types:['Grass'],region:'Hoenn',stage:1,power:310,icon:'🌿'},
+{name:'Sceptile',types:['Grass'],region:'Hoenn',stage:3,power:530,icon:'🌴'},
+{name:'Mudkip',types:['Water'],region:'Hoenn',stage:1,power:310,icon:'💧'},
+{name:'Swampert',types:['Water','Ground'],region:'Hoenn',stage:3,power:535,icon:'🌊'},
+{name:'Blaziken',types:['Fire','Fighting'],region:'Hoenn',stage:3,power:530,icon:'🥊'},
+{name:'Gardevoir',types:['Psychic','Fairy'],region:'Hoenn',stage:3,power:518,icon:'✨'},
+{name:'Lucario',types:['Fighting','Steel'],region:'Sinnoh',stage:2,power:525,icon:'🥊'},
+{name:'Infernape',types:['Fire','Fighting'],region:'Sinnoh',stage:3,power:534,icon:'🔥'},
+{name:'Empoleon',types:['Water','Steel'],region:'Sinnoh',stage:3,power:530,icon:'🔱'},
+{name:'Torterra',types:['Grass','Ground'],region:'Sinnoh',stage:3,power:525,icon:'🌳'},
+{name:'Luxray',types:['Electric'],region:'Sinnoh',stage:3,power:523,icon:'⚡'},
+{name:'Snivy',types:['Grass'],region:'Unova',stage:1,power:308,icon:'🍃'},
+{name:'Serperior',types:['Grass'],region:'Unova',stage:3,power:528,icon:'🐍'},
+{name:'Samurott',types:['Water'],region:'Unova',stage:3,power:528,icon:'⚔️'},
+{name:'Chandelure',types:['Ghost','Fire'],region:'Unova',stage:3,power:520,icon:'🕯️'},
+{name:'Greninja',types:['Water','Dark'],region:'Kalos',stage:3,power:530,icon:'🥷'},
+{name:'Delphox',types:['Fire','Psychic'],region:'Kalos',stage:3,power:534,icon:'🔮'},
+{name:'Sylveon',types:['Fairy'],region:'Kalos',stage:2,power:525,icon:'🎀'},
+{name:'Decidueye',types:['Grass','Ghost'],region:'Alola',stage:3,power:530,icon:'🏹'},
+{name:'Incineroar',types:['Fire','Dark'],region:'Alola',stage:3,power:530,icon:'🐯'},
+{name:'Primarina',types:['Water','Fairy'],region:'Alola',stage:3,power:530,icon:'🫧'},
+{name:'Cinderace',types:['Fire'],region:'Galar',stage:3,power:530,icon:'⚽'},
+{name:'Rillaboom',types:['Grass'],region:'Galar',stage:3,power:530,icon:'🥁'},
+{name:'Inteleon',types:['Water'],region:'Galar',stage:3,power:530,icon:'🎯'},
+{name:'Meowscarada',types:['Grass','Dark'],region:'Paldea',stage:3,power:530,icon:'🎭'},
+{name:'Skeledirge',types:['Fire','Ghost'],region:'Paldea',stage:3,power:530,icon:'🎶'},
+{name:'Quaquaval',types:['Water','Fighting'],region:'Paldea',stage:3,power:530,icon:'💃'},
+
+{name:'Caterpie',types:['Bug'],region:'Kanto',stage:1,power:195,icon:'🐛'},
+{name:'Weedle',types:['Bug','Poison'],region:'Kanto',stage:1,power:195,icon:'🐛'},
+{name:'Magikarp',types:['Water'],region:'Kanto',stage:1,power:200,icon:'🐟'},
+{name:'Pidgey',types:['Normal','Flying'],region:'Kanto',stage:1,power:251,icon:'🐦'},
+{name:'Rattata',types:['Normal'],region:'Kanto',stage:1,power:253,icon:'🐭'},
+{name:'Zubat',types:['Poison','Flying'],region:'Kanto',stage:1,power:245,icon:'🦇'},
+{name:'Geodude',types:['Rock','Ground'],region:'Kanto',stage:1,power:300,icon:'🪨'},
+{name:'Gastly',types:['Ghost','Poison'],region:'Kanto',stage:1,power:310,icon:'👻'},
+{name:'Haunter',types:['Ghost','Poison'],region:'Kanto',stage:2,power:405,icon:'👻'},
+{name:'Machop',types:['Fighting'],region:'Kanto',stage:1,power:305,icon:'🥊'},
+{name:'Machoke',types:['Fighting'],region:'Kanto',stage:2,power:405,icon:'🥊'},
+{name:'Eevee',types:['Normal'],region:'Kanto',stage:1,power:325,icon:'🦊'},
+{name:'Vulpix',types:['Fire'],region:'Kanto',stage:1,power:299,icon:'🦊'},
+{name:'Ninetales',types:['Fire'],region:'Kanto',stage:2,power:505,icon:'🦊'},
+{name:'Growlithe',types:['Fire'],region:'Kanto',stage:1,power:350,icon:'🐕'},
+{name:'Arcanine',types:['Fire'],region:'Kanto',stage:2,power:555,icon:'🐕'},
+{name:'Dratini',types:['Dragon'],region:'Kanto',stage:1,power:300,icon:'🐉'},
+{name:'Dragonair',types:['Dragon'],region:'Kanto',stage:2,power:420,icon:'🐉'},
+{name:'Mewtwo',types:['Psychic'],region:'Kanto',stage:1,power:680,icon:'🔮',legendary:true},
+{name:'Mew',types:['Psychic'],region:'Kanto',stage:1,power:600,icon:'✨',legendary:true},
+{name:'Articuno',types:['Ice','Flying'],region:'Kanto',stage:1,power:580,icon:'❄️',legendary:true},
+{name:'Zapdos',types:['Electric','Flying'],region:'Kanto',stage:1,power:580,icon:'⚡',legendary:true},
+{name:'Moltres',types:['Fire','Flying'],region:'Kanto',stage:1,power:580,icon:'🔥',legendary:true},
+{name:'Lugia',types:['Psychic','Flying'],region:'Johto',stage:1,power:680,icon:'🌊',legendary:true},
+{name:'Ho-Oh',types:['Fire','Flying'],region:'Johto',stage:1,power:680,icon:'🌈',legendary:true},
+{name:'Rayquaza',types:['Dragon','Flying'],region:'Hoenn',stage:1,power:680,icon:'🐉',legendary:true},
+{name:'Kyogre',types:['Water'],region:'Hoenn',stage:1,power:670,icon:'🌊',legendary:true},
+{name:'Groudon',types:['Ground'],region:'Hoenn',stage:1,power:670,icon:'🌋',legendary:true},
+];
+const coords=[[50,50],[50,12],[86,38],[72,83],[28,83],[14,38]];
+const edges=[[0,1],[0,2],[0,3],[0,4],[0,5],[1,2],[2,3],[3,4],[4,5],[5,1]];
+const tierPoints={S:100,A:80,B:60,C:40,D:20};
+const tierWeights={S:2,A:13,B:30,C:35,D:20};
+const typeStyles={Fire:['🔥','#c85c25'],Water:['💧','#307dca'],Grass:['🍃','#438f43'],Electric:['⚡','#b59619'],Flying:['🪽','#7191b9'],Poison:['☣','#8651a6'],Ghost:['👻','#735397'],Dragon:['🐉','#6556aa'],Psychic:['✦','#bb507c'],Dark:['☾','#525465'],Ground:['⛰','#9d773d'],Fighting:['✊','#ab5442'],Steel:['⚙','#667e94'],Fairy:['✿','#bf689d'],Bug:['🐛','#78983a'],Normal:['●','#80878c'],Rock:['◆','#897648'],Ice:['❄','#519fab']};
+const $=id=>document.getElementById(id);
+const regions={Kanto:1,Johto:2,Hoenn:3,Sinnoh:4,Unova:5,Kalos:6,Alola:7,Galar:8,Paldea:9};
+const genLabel=region=>regions[region];
+function tier(m){return m.legendary?'S':m.power>=500?'A':m.power>=400?'B':m.power>=300?'C':'D';}
+function typeBadges(m){return `<span class="types">${m.types.map(t=>{const [symbol,color]=typeStyles[t]||['●','#66798d'];return `<span class="typebadge" style="background:${color}" title="${t} type"><span class="typeglyph" aria-hidden="true">${symbol}</span>${t}</span>`}).join('')}</span>`;}
+function tierBadge(m){const t=tier(m);return `<span class="tier tier-${t}">${t} · ${tierPoints[t]} pts</span>`;}
+// Evolution-family identity is independent of species region or evolution stage.
+// Includes branch evolutions (e.g. Eevee) across the sample roster.
+const familyGroups=[
+ ['Pichu','Pikachu','Raichu'],
+ ['Charmander','Charmeleon','Charizard'],
+ ['Bulbasaur','Ivysaur','Venusaur'],
+ ['Squirtle','Wartortle','Blastoise'],
+ ['Gastly','Haunter','Gengar'],
+ ['Dratini','Dragonair','Dragonite'],
+ ['Cyndaquil','Quilava','Typhlosion'],
+ ['Totodile','Croconaw','Feraligatr'],
+ ['Mareep','Flaaffy','Ampharos'],
+ ['Eevee','Vaporeon','Jolteon','Flareon','Espeon','Umbreon','Leafeon','Glaceon','Sylveon'],
+ ['Treecko','Grovyle','Sceptile'],
+ ['Mudkip','Marshtomp','Swampert'],
+ ['Torchic','Combusken','Blaziken'],
+ ['Ralts','Kirlia','Gardevoir','Gallade'],
+ ['Riolu','Lucario'],
+ ['Chimchar','Monferno','Infernape'],
+ ['Piplup','Prinplup','Empoleon'],
+ ['Turtwig','Grotle','Torterra'],
+ ['Shinx','Luxio','Luxray'],
+ ['Snivy','Servine','Serperior'],
+ ['Oshawott','Dewott','Samurott'],
+ ['Litwick','Lampent','Chandelure'],
+ ['Froakie','Frogadier','Greninja'],
+ ['Fennekin','Braixen','Delphox'],
+ ['Rowlet','Dartrix','Decidueye'],
+ ['Litten','Torracat','Incineroar'],
+ ['Popplio','Brionne','Primarina'],
+ ['Scorbunny','Raboot','Cinderace'],
+ ['Grookey','Thwackey','Rillaboom'],
+ ['Sobble','Drizzile','Inteleon'],
+ ['Sprigatito','Floragato','Meowscarada'],
+ ['Fuecoco','Crocalor','Skeledirge'],
+ ['Quaxly','Quaxwell','Quaquaval'],
+ ['Caterpie','Metapod','Butterfree'],
+ ['Weedle','Kakuna','Beedrill'],
+ ['Magikarp','Gyarados'],
+ ['Pidgey','Pidgeotto','Pidgeot'],
+ ['Rattata','Raticate'],
+ ['Zubat','Golbat','Crobat'],
+ ['Geodude','Graveler','Golem'],
+ ['Machop','Machoke','Machamp'],
+ ['Vulpix','Ninetales'],
+ ['Growlithe','Arcanine']
+];
+const familyLookup=new Map();
+familyGroups.forEach(group=>group.forEach(name=>familyLookup.set(name,group[0])));
+const family=m=>familyLookup.get(m.name)||m.name;
+let placed,options,selected,movingSlot,history,seenOffers,lockedIn,finalStats;
+function randomOptions(){
+ const familiesPicked=new Set(placed.filter(Boolean).map(family));
+ const eligible=mons.filter(m=>!seenOffers.has(m.name)&&!familiesPicked.has(family(m)));
+ const result=[];
+ for(let k=0;k<3 && eligible.length;k++){
+  let roll=Math.random()*Object.values(tierWeights).reduce((a,b)=>a+b,0);
+  let wanted='D';for(const t of ['S','A','B','C','D']){roll-=tierWeights[t];if(roll<0){wanted=t;break;}}
+  let pool=eligible.filter(m=>tier(m)===wanted);
+  if(!pool.length)pool=eligible;
+  const picked=pool[Math.floor(Math.random()*pool.length)];
+  result.push(picked);seenOffers.add(picked.name);
+  for(let n=eligible.length-1;n>=0;n--)if(family(eligible[n])===family(picked))eligible.splice(n,1);
+ }
+ return result;
+}
+function match(a,b){const tags=[];if(a.types.some(t=>b.types.includes(t)))tags.push(['Type',20]);if(a.region===b.region)tags.push(['Generation',15]);if(a.stage===b.stage)tags.push(['Stage',15]);return tags;}
+function scores(){let power=placed.reduce((sum,m)=>sum+(m?tierPoints[tier(m)]:0),0);let synergies=[];for(const [a,b] of edges){if(!placed[a]||!placed[b])continue;const tags=match(placed[a],placed[b]);if(tags.length)synergies.push({a,b,tags,score:tags.reduce((s,t)=>s+t[1],0)});}return{power,synergies,chemistry:synergies.reduce((s,e)=>s+e.score,0)};}
+function choose(index){if(placed.every(Boolean)||lockedIn)return;selected=options[index];movingSlot=null;render();}
+function actSlot(index){
+ if(lockedIn){setStatus("Team locked! Start a new draft to play again.");return;}
+ if(movingSlot!==null){
+  if(index===movingSlot){movingSlot=null;render();return;}
+  if(index===0 && placed[0]){setStatus('The Ace is locked and cannot be replaced.');return;}
+  if(movingSlot===0){setStatus('Your Ace is locked in place.');movingSlot=null;render();return;}
+  [placed[index],placed[movingSlot]]=[placed[movingSlot],placed[index]];
+  if(index===0)setStatus(`${placed[0].name} is now your locked Ace!`);
+  movingSlot=null;selected=null;render();return;
+ }
+ if(placed[index]){
+  if(index===0){setStatus('Your Ace is locked in! You can still rearrange the five outer positions.');return;}
+  selected=null;movingSlot=index;render();return;
+ }
+ if(!selected){setStatus('Select one of the three draft options, or tap an occupied outer slot to move it.');return;}
+ if(placed.filter(Boolean).length>=6)return;
+ placed[index]=selected;
+ const justPlaced=selected;
+ history.push({name:justPlaced.name,position:index});
+ selected=null;options=placed.every(Boolean)?[]:randomOptions();
+ render();if(index===0)setStatus(`${justPlaced.name} is your Ace and is permanently locked!`);
+}
+function setStatus(t){$('status').textContent=t;}
+function optimizeOuter(){
+ if(placed.some(m=>!m)||!placed[0])return null;
+ const outer=placed.slice(1);
+ let maximum=-Infinity,best=null;
+ function permute(prefix, remaining){
+  if(!remaining.length){
+   const arrangement=[placed[0],...prefix];
+   const points=edges.reduce((sum,[a,b])=>sum+match(arrangement[a],arrangement[b]).reduce((t,trait)=>t+trait[1],0),0);
+   if(points>maximum){maximum=points;best=arrangement.slice();}
+   return;
+  }
+  remaining.forEach((m,i)=>permute([...prefix,m],remaining.filter((_,j)=>i!==j)));
+ }
+ permute([],outer);
+ return {maxSynergy:maximum,maxScore:scores().power+maximum,best};
+}
+function lockTeam(){
+ if(lockedIn||placed.some(m=>!m))return;
+ finalStats=optimizeOuter();lockedIn=true;movingSlot=null;selected=null;
+ render();
+}
+function render(){
+ const count=placed.filter(Boolean).length;const done=count===6;
+ $('round').textContent=lockedIn?'Final score revealed':done?'Ready to lock in':`Pick ${count+1} / 6`;
+ $('pickTitle').textContent=lockedIn?'Team locked!':done?'Draft complete — arrange your team':`Choose Pokémon ${count+1}`;
+ $('pickHint').textContent=lockedIn?'Your final score and maximum achievable arrangement are shown below the board.':done?'Swap the outer Pokémon to improve your score, then lock in your final team. Your Ace remains locked.':`Choose one card, then any open slot. Ace can be picked at any time, but once chosen it stays locked.`;
+ $('lines').innerHTML=edges.map(([a,b])=>{const hits=placed[a]&&placed[b]?match(placed[a],placed[b]):[];const cls=hits.length>=2?'synergy-many':hits.length===1?'synergy-one':placed[a]&&placed[b]?'active':'';return `<line x1="${coords[a][0]}" y1="${coords[a][1]}" x2="${coords[b][0]}" y2="${coords[b][1]}" class="${cls}"><title>${placed[a]&&placed[b]?`${placed[a].name} and ${placed[b].name}: ${hits.map(x=>x[0]).join(', ')||'no matching traits'}`:'Empty connection'}</title></line>`;}).join('');
+ const board=$('board');board.querySelectorAll('.slot').forEach(x=>x.remove());
+ coords.forEach(([x,y],i)=>{
+  const mon=placed[i];const el=document.createElement('button');el.type='button';el.className=`slot ${mon?'filled':'empty'} ${i===0?'ace':''} ${movingSlot===i?'moving':''} ${(selected&&!mon)||(movingSlot!==null&&i!==movingSlot&&(i!==0||!placed[0]))?'can-drop':''}`;el.style.left=x+'%';el.style.top=y+'%';
+  el.setAttribute('aria-label',mon?`${i===0?'Locked Ace':'Slot '+i}: ${mon.name}, ${tier(mon)} tier`:`${i===0?'Ace':'Slot '+i}: empty`);
+  el.innerHTML=mon?`${i===0?'<span class="aceTag">★ LOCKED ACE</span>':''}<span class="sloticon">${mon.icon}</span><span class="slotname">${mon.name}</span>${typeBadges(mon)}<span class="slotmeta">${tierBadge(mon)}<br>${mon.power} BST · Gen ${genLabel(mon.region)}<br>${mon.region} · Stage ${mon.stage}</span>`:`<span class="slotnum">${i===0?'★ ACE':`SLOT ${i}`}</span><span class="sloticon">${i===0?'⭐':'＋'}</span><span class="slotmeta">${i===0?'Locks on placement':'Open'}</span>`;
+  el.onclick=()=>actSlot(i);el.disabled=lockedIn; if(lockedIn)el.classList.add('locked-slot');
+  el.draggable=!lockedIn&&!!mon&&i!==0;
+  el.ondragstart=e=>{if(!mon||i===0){e.preventDefault();return;}movingSlot=i;selected=null;e.dataTransfer.setData('text/plain',`slot:${i}`);e.dataTransfer.effectAllowed='move';};
+  el.ondragover=e=>{if(!lockedIn&&((selected&&!mon)||(movingSlot!==null&&i!==movingSlot&&(i!==0||!placed[0])))){e.preventDefault();el.classList.add('drop-over');}};
+  el.ondragleave=()=>el.classList.remove('drop-over');
+  el.ondrop=e=>{e.preventDefault();el.classList.remove('drop-over');actSlot(i);};
+  board.appendChild(el);
+ });
+ const choices=$('choices');choices.innerHTML='';
+ if(done){choices.innerHTML=lockedIn?'<div class="complete">🏆 Team locked and scored!</div>':'<div class="complete">🏆 All six Pokémon drafted!</div><p class="hint">Swap outer Pokémon, then click Lock In Team to reveal your final score and achievable maximum.</p>';}else options.forEach((m,i)=>{
+  const btn=document.createElement('button');btn.className='choice'+(selected===m?' selected':'');btn.draggable=true;
+  btn.innerHTML=`<div class="avatar">${m.icon}</div><div><strong>${m.name}</strong>${typeBadges(m)}<small>Gen ${genLabel(m.region)} · ${m.region} · Stage ${m.stage} · ${m.power} BST</small></div><span class="pow">${tierBadge(m)}</span>`;
+  btn.onclick=()=>choose(i);btn.ondragstart=e=>{selected=m;movingSlot=null;e.dataTransfer.setData('text/plain',m.name);e.dataTransfer.effectAllowed='move';};choices.appendChild(btn);
+ });
+ const s=scores();$('power').textContent=s.power;$('chemistry').textContent='+'+s.chemistry;$('total').textContent=s.power+s.chemistry;
+ $('synergies').innerHTML=s.synergies.length?s.synergies.map(c=>`<div class="synergy-item"><span>${placed[c.a].name} + ${placed[c.b].name}<br><small>${c.tags.map(t=>t[0]).join(' · ')}</small></span><b>+${c.score}</b></div>`).join(''):'<span class="tip">No connected synergies yet.</span>';
+ $('notice').textContent=lockedIn?'Final team submitted. Use Copy Results to share your score, or start a new draft.':movingSlot!==null?`Moving ${placed[movingSlot].name}: tap a new position to move or swap it. You can move it into an empty Ace slot, locking it.`:selected?`Selected ${selected.name}. Tap any open slot to place it. Placing it in the center locks your Ace.`:done?'Draft complete! Rearrange the five outer Pokémon, then Lock In Team to reveal your final comparison.':'Choose a card and click or drag to any empty slot. Tap an outer Pokémon to move or swap it.';
+ $('status').textContent=lockedIn?`Final score: ${s.power+s.chemistry} / ${finalStats.maxScore} maximum achievable with your drafted team and locked Ace.`:movingSlot!==null?`Select another position for ${placed[movingSlot].name}.`:done?`Current preview: ${s.power+s.chemistry} (${s.power} tier power + ${s.chemistry} synergy). Lock in to see your maximum.`:selected?`${selected.name} selected. Choose its place on the web.`:count?`${count} of 6 drafted. ${placed[0]?'Your Ace is locked.':'Ace slot is still open.'}`:'Choose your first Pokémon; Ace selection is optional until the center is filled.';
+ $('copyResults').disabled=!lockedIn;
+ $('lockTeam').disabled=!done||lockedIn;
+ $('lockTeam').textContent=lockedIn?'✓ Team Locked':done?'🔒 Lock In Team & Reveal Score':'🔒 Lock In Team & Reveal Score';
+ const result=$('finalPanel');result.hidden=!lockedIn;
+ if(lockedIn){
+  const achieved=s.power+s.chemistry;
+  const maximum=finalStats.maxScore;
+  const gap=maximum-achieved;
+  const optimal=finalStats.best.slice(1).map((m,i)=>`<strong>${i+1}.</strong> ${m.name}`).join(' · ');
+  result.innerHTML=`<h3>🏆 Final Score: ${achieved} / ${maximum}</h3><p><strong>Tier power:</strong> ${s.power} &nbsp; <strong>Synergy:</strong> +${s.chemistry}</p><p><strong>Best possible with your six picks:</strong> ${maximum} (${s.power} power + ${finalStats.maxSynergy} synergy)</p><p>${gap===0?'🎯 Perfect placement! You achieved the maximum possible score.':`You were <strong>${gap} points</strong> away from the optimal placement.`}</p><p><strong>Optimal outer positions (1–5):</strong> ${optimal}</p><p class="tip">The maximum checks all 120 outer-position arrangements using your six drafted Pokémon and the Ace you permanently locked. It does not account for Pokémon you passed on.</p>`;
+ }
+
+}
+function resultsText(){const s=scores();const names=placed.map((m,i)=>`${i===0?'ACE':`Outer ${i}`}: ${m?`${m.name} (${tier(m)}, ${m.power} BST)`:'Empty'}`).join('\n');const pairs=s.synergies.map(c=>`${placed[c.a].name} + ${placed[c.b].name}: +${c.score} [${c.tags.map(t=>t[0]).join(', ')}]`).join('\n');return `Pokémon Synergy Lab — ${lockedIn?'Locked final team':'Draft in progress'}\n\n${names}\n\nPower: ${s.power}\nSynergy: +${s.chemistry}\nTOTAL: ${s.power+s.chemistry}\nMAX ACHIEVABLE (same six Pokémon, locked Ace): ${finalStats?finalStats.maxScore:"Not calculated"}\n\nSynergy connections:\n${pairs||'None yet'}\n\nPlay the game: ${location.protocol.startsWith('http')?location.href:'(share the hosted game URL)'}`;}
+async function copyResults(){const result=resultsText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(result);}else{const ta=document.createElement('textarea');ta.value=result;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();if(!ok)throw Error('copy unavailable');}$('copyStatus').textContent='Copied! Paste into a text or message.';}catch(e){window.prompt('Copy your results:',result);$('copyStatus').textContent='Select and copy the results above.';}}
+function reset(){placed=Array(6).fill(null);selected=null;movingSlot=null;history=[];seenOffers=new Set();lockedIn=false;finalStats=null;options=randomOptions();$('copyStatus').textContent='';render();}
+$('reset').addEventListener('click',reset);$('lockTeam').addEventListener('click',lockTeam);$('copyResults').addEventListener('click',copyResults);reset();
+</script>
+</body></html>
